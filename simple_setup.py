@@ -41,9 +41,20 @@ def setup_simple_virtual_lab():
 def run_agent_meeting(client, agent_prompt, task, temperature=0.7):
     """
     Run a single agent meeting - exactly like Virtual Lab paper
+    Enhanced with search capability instructions
     """
     
-    full_prompt = f"{agent_prompt}\n\nTASK: {task}"
+    # Add search capability instructions
+    search_instructions = """
+    
+WEB SEARCH CAPABILITY:
+If you need to verify information or find the latest methods/tools, mention in your response:
+"[SEARCH NEEDED: topic/method you want to search for]"
+
+This will indicate where additional current information would be helpful to inform your recommendations.
+"""
+    
+    full_prompt = f"{agent_prompt}\n{search_instructions}\n\nTASK: {task}"
     
     try:
         response = client.messages.create(
@@ -62,14 +73,27 @@ def run_agent_meeting(client, agent_prompt, task, temperature=0.7):
 def run_team_meeting(client, team_prompt, temperature=0.7):
     """
     Run team meeting with multiple agents
+    Enhanced with search capability instructions
     """
+    
+    # Add search capability instructions
+    search_instructions = """
+    
+WEB SEARCH CAPABILITY:
+If any agent needs to verify information or find the latest methods/tools, they can mention:
+"[SEARCH NEEDED: topic/method to search for]"
+
+This will indicate where additional current information would be helpful.
+"""
+    
+    enhanced_prompt = f"{team_prompt}\n{search_instructions}"
     
     try:
         response = client.messages.create(
             model="claude-3-5-sonnet-20241022", 
             max_tokens=4000,
             temperature=temperature,
-            messages=[{"role": "user", "content": team_prompt}]
+            messages=[{"role": "user", "content": enhanced_prompt}]
         )
         
         return response.content[0].text

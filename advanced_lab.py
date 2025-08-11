@@ -444,27 +444,44 @@ END WITH: Concrete action items, clear task assignments for each participant, an
                                   meeting_config: Meeting,
                                   num_parallel: int = 3,
                                   creative_temp: float = 0.8,
-                                  merge_temp: float = 0.2) -> Dict[str, Any]:
+                                  merge_temp: float = 0.2,
+                                  all_agents: bool = True) -> Dict[str, Any]:
         """
         Run parallel meetings for robustness (like Virtual Lab paper)
+        Each parallel meeting includes 3 rounds of discussion
         Then merge results with lower temperature for consistency
+        
+        Args:
+            meeting_config: Meeting configuration
+            num_parallel: Number of parallel meetings to run
+            creative_temp: Temperature for parallel meetings (higher for creativity)
+            merge_temp: Temperature for synthesis (lower for consistency)
+            all_agents: If True, includes all 6 agents; if False, uses meeting_config.participants
         """
         
-        self.logger.info(f"Running {num_parallel} parallel meetings")
+        # Use all 6 agents if requested
+        if all_agents and meeting_config.meeting_type == "team":
+            all_agent_names = ["Dr. Sarah Chen", "Dr. Raj Patel", "Dr. Lisa Wang", "Dr. Michael Torres", "Dr. Elena Rodriguez", "Dr. Alex Cho"]
+            participants = all_agent_names
+        else:
+            participants = meeting_config.participants
+            
+        self.logger.info(f"Running {num_parallel} parallel meetings with {len(participants)} agents")
+        self.logger.info(f"Each meeting will have {meeting_config.rounds} rounds")
         
         # Run parallel meetings with high temperature for creativity
         parallel_tasks = []
         for i in range(num_parallel):
             if meeting_config.meeting_type == "team":
                 task = self.run_team_meeting(
-                    meeting_config.agenda,
-                    meeting_config.participants,
+                    f"{meeting_config.agenda} (Parallel Session {i+1})",
+                    participants,
                     meeting_config.rounds,
                     creative_temp
                 )
             else:  # individual
                 task = self.run_individual_meeting(
-                    meeting_config.participants[0],  # First participant for individual
+                    participants[0],  # First participant for individual
                     meeting_config.agenda,
                     rounds=meeting_config.rounds,
                     temperature=creative_temp
