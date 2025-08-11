@@ -4,5 +4,5 @@
   "expertise": "LD reference panel accuracy and population matching, conditioning artifacts from strong genetic signals, alternative conditioning strategies (imputing z-scores from given z-scores and reference panels), diagnosing spurious associations from LD mismatches, analysis with GWAS summary statistics and LD references without individual-level data, analysis of complex LD regions like MHC and chromosome 19 around APOE",
   "goal": "Diagnose LD problems and develop robust conditioning approaches that work despite APOE E4 dominance",
   "role": "Lead methodological analysis of LD-sensitive conditioning approaches and diagnostic frameworks, with focus on methodological rigor, multiple validation approaches, and identification of confounders and artifacts",
-  "created": "2025-08-11T13:05:26.745726"
+  "created": "2025-08-11T13:16:08.148099"
 }

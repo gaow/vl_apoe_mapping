@@ -92,7 +92,7 @@ class VirtualLab:
                      role: str) -> Agent:
         """Create a specialized agent with defined expertise"""
         
-        # Base prompt template following Virtual Lab paper structure
+        # Base prompt template following Virtual Lab paper structure - NON-INTERACTIVE
         prompt_template = f"""
 You are {name}, a {title} in a Virtual Lab studying the APOE region for Alzheimer's disease.
 
@@ -111,25 +111,21 @@ PROJECT CONTEXT:
   4. xQTL data includes effects on nearby genes beyond APOE - need to distinguish direct vs indirect effects
 - Goal: Find independent AD-predisposing variants beyond E2/E3/E4 with robust methodology
 
-CAPABILITIES:
-- You have access to internet search to look up latest methods, software, and research
-- If uncertain about specific approaches, you can search for current best practices
-- Always ground recommendations in the most recent and robust methodologies
-
-INSTRUCTIONS:
-- Provide expert analysis within your area of expertise
-- Be specific about methods, software, and parameters
-- Suggest quality control steps and validation approaches
-- Identify potential issues and limitations
-- If you need to verify or find information about methods/tools, use web search
-- Consider the challenge of analyzing ~300 genes in the region - suggest prioritization strategies
+CRITICAL INSTRUCTIONS FOR NON-INTERACTIVE OUTPUT:
+- Provide COMPLETE, COMPREHENSIVE analysis without any interactive prompts or questions
+- Never ask "Would you like me to continue..." or similar prompts
+- Always provide full, detailed recommendations in a single response
+- Include ALL relevant information, methods, software, and parameters
+- Be thorough and exhaustive in your analysis
+- Consider the challenge of analyzing ~300 genes - provide complete prioritization strategies
+- Ground all recommendations in latest research and best practices
 
 When participating in meetings:
-- Contribute your specialized perspective
-- Build on other agents' ideas constructively
-- Ask clarifying questions when needed
-- Provide concrete, actionable recommendations
-- Search for information if you're uncertain about specific technical details
+- Provide your COMPLETE specialized analysis in full detail
+- Build comprehensively on other agents' ideas
+- Give concrete, actionable recommendations with full implementation details
+- Never leave responses incomplete or ask for permission to continue
+- Deliver maximum value in every response
 """
 
         agent = Agent(
@@ -189,11 +185,11 @@ When participating in meetings:
     async def call_llm(self, 
                        prompt: str, 
                        temperature: float = 0.7,
-                       max_tokens: int = 4000,
+                       max_tokens: int = 8000,  # Increased for comprehensive responses
                        enable_search: bool = True) -> str:
         """Make API call to LLM with optional web search capability"""
         
-        # Add search capability to prompt if enabled
+        # Add search capability to prompt if enabled - NON-INTERACTIVE
         if enable_search:
             search_instructions = """
             
@@ -202,8 +198,20 @@ If you need to verify information or find the latest methods/tools, you can requ
 [SEARCH: your search query]
 
 I will then provide you with current information to inform your recommendations.
+
+IMPORTANT: Use web search sparingly and continue with comprehensive analysis based on your existing knowledge. Do NOT make your response dependent on search results.
 """
             prompt += search_instructions
+        
+        # Add non-interactive requirement
+        non_interactive_instruction = """
+        
+CRITICAL NON-INTERACTIVE REQUIREMENT:
+You MUST provide a complete, comprehensive response with NO interactive prompts or questions.
+NEVER ask "Would you like me to continue..." or "Should I proceed with..." or similar.
+DELIVER ALL your analysis and recommendations in a single, complete response.
+"""
+        prompt += non_interactive_instruction
         
         try:
             if self.api_provider == "anthropic":
@@ -246,7 +254,8 @@ I will then provide you with current information to inform your recommendations.
                                    task: str,
                                    context: str = "",
                                    rounds: int = 1,
-                                   temperature: float = 0.7) -> Dict[str, Any]:
+                                   temperature: float = 0.7,
+                                   max_tokens: int = 8000) -> Dict[str, Any]:
         """
         Run individual meeting with specific agent
         Based on Virtual Lab paper individual meeting structure
@@ -257,7 +266,7 @@ I will then provide you with current information to inform your recommendations.
             
         agent = self.agents[agent_name]
         
-        # Construct meeting prompt
+        # Construct meeting prompt - NON-INTERACTIVE
         meeting_prompt = f"""
 {agent.prompt_template}
 
@@ -267,14 +276,23 @@ INDIVIDUAL MEETING TASK:
 ADDITIONAL CONTEXT:
 {context}
 
-Please provide:
-1. Your analysis approach for this specific task
-2. Detailed methodology recommendations
-3. Expected outcomes and validation steps
-4. Potential limitations and how to address them
-5. Next steps and follow-up analyses
+CRITICAL: COMPLETE NON-INTERACTIVE RESPONSE REQUIRED
+You MUST provide a COMPREHENSIVE, COMPLETE analysis in a single response with NO interactive prompts.
 
-Be specific about software, parameters, and implementation details.
+Your response MUST include ALL of the following in full detail:
+1. Your COMPLETE analysis approach for this specific task
+2. COMPREHENSIVE methodology recommendations with specific software versions and parameters
+3. DETAILED expected outcomes and validation steps
+4. ALL potential limitations and complete solutions to address them
+5. COMPLETE next steps and follow-up analyses
+6. FULL implementation details including code structure and workflows
+7. COMPREHENSIVE quality control and diagnostic procedures
+8. COMPLETE prioritization strategies for ~300 candidate genes
+9. DETAILED resource requirements and timeline estimates
+10. EXHAUSTIVE troubleshooting and validation approaches
+
+NEVER ask "Would you like me to continue..." or any interactive questions.
+DELIVER MAXIMUM COMPREHENSIVE CONTENT IN THIS SINGLE RESPONSE.
 """
 
         self.logger.info(f"Running individual meeting with {agent_name}")
@@ -285,7 +303,7 @@ Be specific about software, parameters, and implementation details.
             if round_num > 0:
                 meeting_prompt += f"\n\nPREVIOUS ANALYSIS:\n{responses[-1]}\n\nPlease refine and improve your recommendations:"
                 
-            response = await self.call_llm(meeting_prompt, temperature=temperature)
+            response = await self.call_llm(meeting_prompt, temperature=temperature, max_tokens=max_tokens)
             responses.append(response)
         
         # Save meeting results
@@ -336,7 +354,8 @@ Be specific about software, parameters, and implementation details.
                              agenda: str,
                              participants: List[str],
                              rounds: int = 3,
-                             temperature: float = 0.7) -> Dict[str, Any]:
+                             temperature: float = 0.7,
+                             max_tokens: int = 8000) -> Dict[str, Any]:
         """
         Run team meeting with multiple agents
         Based on Virtual Lab paper team meeting structure
@@ -370,37 +389,40 @@ PROJECT CONTEXT:
 - Need to analyze ~300 genes in region - require prioritization strategies
 - Need robust, validated approaches for this complex region
 
+CRITICAL: COMPLETE NON-INTERACTIVE MEETING
+This meeting must be FULLY COMPLETED in a single response with NO interactive prompts.
+
 MEETING STRUCTURE:
-This is a {rounds}-round scientific discussion. For each round:
+This is a {rounds}-round scientific discussion. You MUST complete ALL {rounds} rounds in full detail:
 
 **ROUND 1: Initial Recommendations**
-Each participant provides their initial analysis and recommendations for their area of expertise.
+Each participant MUST provide their complete initial analysis and recommendations for their area of expertise.
 
 **ROUND 2: Integration and Refinement** 
-Participants build on each other's ideas, identify dependencies between approaches, and refine recommendations based on interdisciplinary feedback.
+Participants MUST build on each other's ideas, identify dependencies between approaches, and refine recommendations based on interdisciplinary feedback.
 
 **ROUND 3: Synthesis and Implementation**
 Final synthesis of all approaches into a coherent analysis pipeline with clear priorities, validation standards, and implementation steps.
 
-Please simulate this productive {rounds}-round scientific discussion where:
-- Each participant contributes their specialized expertise in each round
-- Ideas are built upon and refined across rounds
-- Methodological challenges are systematically addressed
-- Realistic prioritization strategies are developed (given ~300 candidate genes)
+IMPERATIVE REQUIREMENTS:
+- NEVER ask "Would you like me to continue..." or any interactive questions
+- COMPLETE ALL {rounds} ROUNDS in full detail in a single response
+- Each participant must contribute their COMPLETE specialized expertise in EVERY round
+- Provide COMPREHENSIVE methodological recommendations with software/parameters
+- Include ALL quality control considerations and diagnostics
+- Provide COMPLETE validation strategies and negative controls
+- Give realistic resource and time estimates
+- Develop FULL prioritization strategies for all ~300 candidate genes
 
-Include in each round:
-- Specific methodological recommendations with software/parameters
-- Quality control considerations and diagnostics
-- Validation strategies and negative controls
-- Realistic resource and time estimates
+MUST END WITH: Concrete action items, clear task assignments for each participant, and prioritized implementation timeline.
 
-END WITH: Concrete action items, clear task assignments for each participant, and prioritized implementation timeline.
+DELIVER MAXIMUM COMPREHENSIVE CONTENT IN THIS SINGLE RESPONSE.
 """
 
         self.logger.info(f"Running team meeting: {agenda}")
         self.logger.info(f"Participants: {', '.join(participants)}")
         
-        response = await self.call_llm(team_prompt, temperature=temperature)
+        response = await self.call_llm(team_prompt, temperature=temperature, max_tokens=max_tokens)
         
         # Save meeting results
         meeting_result = {
@@ -505,19 +527,30 @@ PARALLEL MEETING RESULTS:
             else:
                 merge_prompt += f"\n--- Meeting {i+1} ---\n{result['final_response']}\n"
                 
-        merge_prompt += """
+        merge_prompt += f"""
+
+CRITICAL: COMPLETE NON-INTERACTIVE SYNTHESIS REQUIRED
 
 SYNTHESIS TASK:
-Please synthesize these parallel discussions into a single, coherent response that:
-1. Combines the best insights from all meetings
-2. Resolves any contradictions or disagreements
-3. Provides clear, actionable recommendations
-4. Maintains scientific rigor and methodological soundness
+You MUST synthesize these {num_parallel} parallel discussions into a single, COMPREHENSIVE, COMPLETE response that:
+1. Combines ALL the best insights from all {num_parallel} meetings in full detail
+2. Resolves ALL contradictions or disagreements with complete explanations
+3. Provides COMPREHENSIVE, actionable recommendations with full implementation details
+4. Maintains scientific rigor and methodological soundness throughout
+5. Includes COMPLETE prioritization strategies for ~300 candidate genes
+6. Provides DETAILED resource requirements and timeline estimates
+7. Delivers EXHAUSTIVE quality control and validation procedures
+8. Gives COMPLETE implementation workflows and code structures
 
-Focus on convergent themes and most robust recommendations.
+IMPERATIVE REQUIREMENTS:
+- NEVER ask "Would you like me to continue..." or any interactive questions
+- Focus on convergent themes and most robust recommendations
+- Deliver MAXIMUM comprehensive content in this single response
+- Include ALL technical details, parameters, and implementation guidance
+- Provide COMPLETE analysis pipeline from start to finish
 """
 
-        merged_response = await self.call_llm(merge_prompt, temperature=merge_temp)
+        merged_response = await self.call_llm(merge_prompt, temperature=merge_temp, enable_search=False)  # Disable search for synthesis to avoid delays
         
         # Save synthesis results
         synthesis_result = {

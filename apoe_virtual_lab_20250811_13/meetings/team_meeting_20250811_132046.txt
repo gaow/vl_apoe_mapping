@@ -1,0 +1,175 @@
+VIRTUAL LAB TEAM MEETING
+============================================================
+Timestamp: 2025-08-11T13:20:46.905686
+Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+Rounds: 3
+
+AGENDA:
+----------
+Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 1)
+
+DISCUSSION:
+----------
+VIRTUAL LAB TEAM MEETING: APOE Analysis Pipeline Development
+
+**ROUND 1: Initial Recommendations**
+
+Dr. Sarah Chen (LD Reference Panel):
+- Primary recommendation: Use population-matched 1000G reference panels with careful stratification
+- Minimum 3 ancestry-specific reference panels (EUR, EAS, AFR) required
+- Calculate LD matrices using PLINK v1.9 with r2 threshold >0.001
+- Critical: Account for long-range LD patterns in APOE region
+- Generate LD heat maps pre/post APOE conditioning to identify artifacts
+- Validate LD patterns across multiple reference populations
+
+Dr. Raj Patel (Colocalization):
+- Implement multi-signal colocalization pipeline:
+  1. COLOC-SuSiE for handling multiple causal variants
+  2. eCAVIAR as secondary validation
+  3. colocboost for increased sensitivity
+- Set strict posterior probability thresholds (PP4 > 0.8)
+- Account for different molecular QTL types (eQTL, sQTL, pQTL)
+- Generate colocalization plots for visual inspection
+
+Dr. Lisa Wang (Fine-mapping):
+- Three-tiered fine-mapping approach:
+  1. SuSiE primary analysis (handle multiple causal variants)
+  2. FINEMAP validation
+  3. PolyFun for functional priors
+- Credible set criteria: 95% posterior inclusion probability
+- Implement cross-validation across methods
+- Generate fine-mapping diagnostic plots
+
+Dr. Michael Torres (APOE Biology):
+- Prioritize analysis of known regulatory regions:
+  - APOE enhancer cluster (chr19:45,449,000-45,452,000)
+  - TOMM40/APOE promoter region
+  - Known liver-specific regulatory elements
+- Consider tissue-specific effects (brain, liver, microglia)
+- Account for isoform-specific expression patterns
+
+Dr. Elena Rodriguez (Scientific Critic):
+- Key validation requirements:
+  1. Replication in independent cohorts
+  2. Cross-ancestry validation
+  3. Biological plausibility checks
+  4. Systematic bias assessment
+- Documentation of all assumptions and limitations
+- Negative control analyses using matched genomic regions
+
+Dr. Alex Cho (Implementation):
+- Develop modular Snakemake pipeline
+- Implement parallel processing for 300 genes
+- Automated QC reporting system
+- Version control and documentation
+- Resource estimation: 500 CPU hours total
+
+**ROUND 2: Integration and Refinement**
+
+Cross-cutting themes and dependencies:
+
+1. LD Reference Integration (Chen + Wang):
+- Generate ancestry-specific LD matrices
+- Share matrices across fine-mapping methods
+- Implement LD-aware gene prioritization
+
+2. Fine-mapping/Colocalization Interface (Patel + Wang):
+- Harmonize variant selection criteria
+- Share posterior probabilities across methods
+- Joint visualization framework
+
+3. Biological Validation (Torres + Rodriguez):
+- Tissue-specific expression validation
+- Literature-based prioritization matrix
+- Functional annotation integration
+
+4. Implementation Framework (Cho + all):
+- Modular pipeline structure:
+  - LD calculation module
+  - Fine-mapping module
+  - Colocalization module
+  - Visualization module
+- Automated reporting system
+
+**ROUND 3: Synthesis and Implementation**
+
+Final Pipeline Structure:
+
+1. Data Preparation (Week 1-2):
+- QC of input data
+- LD reference panel preparation
+- Annotation compilation
+
+2. Primary Analysis (Week 3-4):
+- Parallel fine-mapping across genes
+- Colocalization analysis
+- Initial biological filtering
+
+3. Validation (Week 5-6):
+- Cross-method comparison
+- Replication analysis
+- Functional validation
+
+4. Final Integration (Week 7-8):
+- Results synthesis
+- Documentation
+- Publication preparation
+
+Gene Prioritization Strategy:
+1. Tier 1 (~30 genes):
+- Known AD association
+- Strong regulatory evidence
+- High expression in relevant tissues
+
+2. Tier 2 (~100 genes):
+- Moderate biological evidence
+- Tissue-specific expression
+- Protein interaction networks
+
+3. Tier 3 (~170 genes):
+- Remaining candidates
+- Exploratory analysis
+
+Action Items and Assignments:
+
+Dr. Chen:
+- Prepare LD reference panels
+- Generate LD diagnostics
+- Timeline: Weeks 1-2
+
+Dr. Patel:
+- Implement colocalization pipeline
+- Develop visualization tools
+- Timeline: Weeks 2-4
+
+Dr. Wang:
+- Set up fine-mapping pipeline
+- Generate QC metrics
+- Timeline: Weeks 2-4
+
+Dr. Torres:
+- Compile biological annotation database
+- Develop prioritization criteria
+- Timeline: Weeks 1-3
+
+Dr. Rodriguez:
+- Design validation framework
+- Develop QC checkpoints
+- Timeline: Weeks 3-6
+
+Dr. Cho:
+- Build pipeline infrastructure
+- Implement automation
+- Timeline: Weeks 1-8
+
+Implementation Timeline:
+Weeks 1-2: Setup and data preparation
+Weeks 3-4: Primary analysis
+Weeks 5-6: Validation
+Weeks 7-8: Integration and documentation
+
+Resource Requirements:
+- Computing: 64-core cluster, 256GB RAM
+- Storage: 2TB
+- Software: R, Python, PLINK, specialized packages
+- Personnel: 6 team members, 50% time commitment

@@ -1,0 +1,179 @@
+VIRTUAL LAB TEAM MEETING
+============================================================
+Timestamp: 2025-08-11T13:21:32.026804
+Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+Rounds: 3
+
+AGENDA:
+----------
+Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 3)
+
+DISCUSSION:
+----------
+VIRTUAL LAB TEAM MEETING: APOE Analysis Pipeline Development
+
+**ROUND 1: Initial Recommendations**
+
+Dr. Sarah Chen (LD Reference Panel):
+- Primary recommendation: Use population-matched 1000G reference panels with careful stratification
+- Minimum 3 ancestry-specific reference panels (EUR, EAS, AFR) for robust LD estimation
+- Implement sliding window approach (250kb) with 50kb overlaps for APOE region
+- Critical QC: Remove variants with MAF <1%, check reference allele matching
+- Estimated time: 2 weeks for reference panel preparation and validation
+
+Dr. Raj Patel (Colocalization):
+- Implement hierarchical colocalization pipeline:
+1. COLOC-SuSiE for initial signal decomposition
+2. eCAVIAR for complex multi-SNP patterns
+3. colocboost for validation of strongest signals
+- Parameters: PP4 threshold >0.8, minimum regional PP >0.9
+- Time estimate: 3-4 weeks for full pipeline implementation
+
+Dr. Lisa Wang (Fine-mapping):
+- Three-tier fine-mapping approach:
+1. SuSiE baseline analysis (L=10 maximum signals)
+2. FINEMAP for validation (k=15 causal variants)
+3. PolyFun for functional enrichment
+- Critical: Implement stepwise conditioning on E2/E3/E4
+- Diagnostic metrics: convergence checks, credible set coverage
+- Timeline: 4-5 weeks for complete fine-mapping pipeline
+
+Dr. Michael Torres (APOE Biology):
+- Prioritization criteria:
+1. Known APOE regulatory elements
+2. Chromatin accessibility in relevant tissues
+3. Conservation scores
+- Focus on:
+a) TOMM40-APOE intergenic region
+b) APOE enhancer clusters
+c) Nearby lipid metabolism genes
+- Time estimate: 2-3 weeks for biological annotation
+
+Dr. Elena Rodriguez (Scientific Critic):
+- Critical evaluation points:
+1. Population stratification effects
+2. LD reference panel matching
+3. Conditioning artifact detection
+4. False positive control
+- Validation requirements:
+a) Permutation testing
+b) Negative control regions
+c) Cross-population replication
+- Timeline: Ongoing throughout project
+
+Dr. Alex Cho (Implementation):
+- Technical infrastructure:
+1. Snakemake workflow for pipeline automation
+2. R/Python hybrid implementation
+3. AWS batch computing integration
+- Resource requirements:
+a) 64-core compute instance
+b) 256GB RAM minimum
+c) 2TB storage
+- Implementation time: 6-8 weeks
+
+**ROUND 2: Integration and Refinement**
+
+Cross-cutting themes and dependencies:
+
+1. LD Reference Integration (Chen + Wang):
+- Implement ancestry-specific fine-mapping
+- Share LD matrices across methods
+- Joint QC pipeline for reference matching
+
+2. Colocalization-Fine-mapping Interface (Patel + Wang):
+- Harmonize prior specifications
+- Share credible sets between methods
+- Unified conditioning strategy
+
+3. Biological Prioritization (Torres + Rodriguez):
+- Weight statistical evidence by biological relevance
+- Develop quantitative prioritization score
+- Incorporate tissue-specific effects
+
+4. Implementation Framework (Cho + All):
+- Modular pipeline design
+- Standardized input/output formats
+- Automated QC reporting
+
+**ROUND 3: Synthesis and Implementation**
+
+Final Pipeline Structure:
+
+1. Data Preparation (Week 1-2):
+- Reference panel preparation (Chen)
+- GWAS/QTL data harmonization (Cho)
+- Initial QC metrics (Rodriguez)
+
+2. Primary Analysis (Week 3-6):
+- Parallel fine-mapping streams (Wang)
+- Colocalization analysis (Patel)
+- Biological annotation (Torres)
+
+3. Integration Phase (Week 7-8):
+- Result aggregation (Cho)
+- Quality assessment (Rodriguez)
+- Biological interpretation (Torres)
+
+4. Validation Phase (Week 9-10):
+- Cross-method validation (All)
+- Sensitivity analyses (Rodriguez)
+- Documentation (Cho)
+
+Gene Prioritization Strategy:
+1. Tier 1 (~50 genes):
+- Direct APOE pathway involvement
+- Strong statistical evidence
+- Known AD relevance
+
+2. Tier 2 (~100 genes):
+- Secondary pathway connections
+- Moderate statistical evidence
+- Tissue-specific expression
+
+3. Tier 3 (~150 genes):
+- Remaining regional genes
+- Weak/unclear evidence
+- Novel candidates
+
+Action Items and Assignments:
+
+Dr. Chen:
+- Prepare ancestry-specific LD reference panels
+- Implement LD QC pipeline
+- Due: Week 2
+
+Dr. Patel:
+- Develop colocalization workflow
+- Integration with fine-mapping
+- Due: Week 6
+
+Dr. Wang:
+- Implement fine-mapping pipeline
+- Conditioning strategy validation
+- Due: Week 6
+
+Dr. Torres:
+- Biological annotation pipeline
+- Prioritization scoring system
+- Due: Week 4
+
+Dr. Rodriguez:
+- Develop validation framework
+- QC metric implementation
+- Due: Ongoing
+
+Dr. Cho:
+- Pipeline infrastructure development
+- Documentation and training
+- Due: Week 8
+
+Timeline:
+Weeks 1-2: Setup and data preparation
+Weeks 3-6: Core analysis implementation
+Weeks 7-8: Integration and validation
+Weeks 9-10: Final QC and documentation
+
+Total project duration: 10 weeks
+Regular progress meetings: Bi-weekly
+Final deliverable: Validated, documented pipeline for APOE region analysis

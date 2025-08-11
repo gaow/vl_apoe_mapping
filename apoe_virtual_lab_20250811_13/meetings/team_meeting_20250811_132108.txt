@@ -1,0 +1,163 @@
+VIRTUAL LAB TEAM MEETING
+============================================================
+Timestamp: 2025-08-11T13:21:08.817031
+Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+Rounds: 3
+
+AGENDA:
+----------
+Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 2)
+
+DISCUSSION:
+----------
+VIRTUAL LAB TEAM MEETING: APOE Analysis Pipeline Development
+
+**ROUND 1: Initial Recommendations**
+
+Dr. Sarah Chen (LD Reference Panel):
+- Primary recommendation: Use population-matched 1000G reference panels with careful stratification
+- Minimum 3 reference populations (EUR, EAS, AFR) for cross-population validation
+- Generate local LD matrices using 5Mb window around APOE region
+- Implement sliding window approach for LD calculation to capture long-range effects
+- Quality metrics: R² threshold >0.8, minimum MAF >1% for reliable LD estimation
+
+Dr. Raj Patel (Colocalization):
+- Deploy COLOC-SuSiE for handling multiple causal variants
+- Parallel implementation of eCAVIAR for cross-validation
+- Prior probability parameters: p1=1e-4, p2=1e-4, p12=1e-5
+- Colocalization threshold PP4>0.8 with sensitivity analysis
+- Generate regional colocalization plots for visual inspection
+
+Dr. Lisa Wang (Fine-mapping):
+- Primary: SuSiE with adaptive L parameter selection
+- Secondary: FINEMAP for cross-validation
+- PolyFun integration for functional priors
+- Credible set threshold 95% coverage
+- Independent signal threshold: r² < 0.1
+
+Dr. Michael Torres (APOE Biology):
+- Prioritize known regulatory elements: enhancers, promoters
+- Focus on APOE-pathway genes (TOMM40, APOC1, CLU)
+- Stratify analysis by E2/E3/E4 background
+- Include chromatin interaction data from brain tissue
+- Consider tissue-specific eQTL effects
+
+Dr. Elena Rodriguez (Scientific Critique):
+- Implement systematic bias checks
+- Population stratification sensitivity analysis
+- Power calculations for effect size detection
+- Multiple testing correction framework
+- Reproducibility metrics definition
+
+Dr. Alex Cho (Implementation):
+- Snakemake workflow for pipeline automation
+- Containerized environment (Docker/Singularity)
+- GPU acceleration for computation-intensive steps
+- Automated QC report generation
+- Version control and documentation
+
+**ROUND 2: Integration and Refinement**
+
+Cross-cutting Recommendations:
+
+1. LD Analysis Integration:
+- Dr. Chen + Dr. Wang: Integrate LD reference selection with fine-mapping
+- Population-specific LD matrices for each analysis step
+- Joint QC metrics for LD calculation and fine-mapping
+
+2. Molecular QTL Analysis:
+- Dr. Patel + Dr. Torres: Tissue-specific colocalization
+- Brain-specific eQTL prioritization
+- Integration with chromatin interaction data
+
+3. Statistical Framework:
+- Dr. Rodriguez + Dr. Wang: Joint statistical framework
+- FDR control across multiple analyses
+- Power analysis for prioritization
+
+4. Implementation Strategy:
+- Dr. Cho + All: Modular pipeline development
+- Automated validation checks
+- Reproducibility framework
+
+**ROUND 3: Synthesis and Implementation**
+
+Final Pipeline Structure:
+
+1. Data Preprocessing (Week 1-2):
+- QC of GWAS and molecular QTL data
+- LD reference panel preparation
+- Population stratification analysis
+
+2. Primary Analysis (Week 3-4):
+- Fine-mapping with SuSiE
+- Colocalization analysis
+- Regulatory element annotation
+
+3. Validation Phase (Week 5-6):
+- Cross-population validation
+- Sensitivity analyses
+- QC metric evaluation
+
+4. Gene Prioritization Strategy:
+Tier 1 (~50 genes):
+- Known APOE pathway genes
+- Strong regulatory evidence
+- High-confidence colocalization
+
+Tier 2 (~100 genes):
+- Moderate statistical evidence
+- Tissue-specific effects
+- Secondary pathway connections
+
+Tier 3 (~150 genes):
+- Remaining candidates
+- Exploratory analyses
+- Novel hypotheses
+
+Action Items and Assignments:
+
+Dr. Chen:
+- Develop LD reference panel pipeline
+- Generate population-specific matrices
+- Timeline: Weeks 1-2
+
+Dr. Patel:
+- Implement colocalization workflow
+- Develop visualization tools
+- Timeline: Weeks 2-4
+
+Dr. Wang:
+- Set up fine-mapping pipeline
+- Integrate functional priors
+- Timeline: Weeks 2-4
+
+Dr. Torres:
+- Annotate regulatory elements
+- Prioritize biological pathways
+- Timeline: Weeks 3-5
+
+Dr. Rodriguez:
+- Develop validation framework
+- Implement QC metrics
+- Timeline: Weeks 4-6
+
+Dr. Cho:
+- Create pipeline infrastructure
+- Automate workflows
+- Timeline: Weeks 1-6
+
+Resource Requirements:
+- High-performance computing cluster
+- 500GB storage minimum
+- 64GB RAM per node
+- GPU acceleration for intensive calculations
+
+Final Deliverables (Week 6):
+1. Automated analysis pipeline
+2. Comprehensive QC reports
+3. Prioritized gene list with evidence
+4. Publication-ready figures
+5. Technical documentation
+
+This complete pipeline will provide a robust, reproducible framework for analyzing the APOE region while addressing the complex challenges of LD structure and multiple causal variants.

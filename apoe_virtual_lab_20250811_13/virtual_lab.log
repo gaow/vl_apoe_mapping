@@ -45,3 +45,50 @@
 2025-08-11 13:08:53,705 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
 2025-08-11 13:08:53,848 - INFO - ✅ Team meeting saved: apoe_virtual_lab_20250811_13/meetings/team_meeting_20250811_130853.txt
 2025-08-11 13:09:05,324 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:15:00,080 - INFO - Created agent: Dr. Sarah Chen
+2025-08-11 13:15:00,080 - INFO - Created agent: Dr. Raj Patel
+2025-08-11 13:15:00,081 - INFO - Created agent: Dr. Lisa Wang
+2025-08-11 13:15:00,081 - INFO - Created agent: Dr. Michael Torres
+2025-08-11 13:15:00,081 - INFO - Created agent: Dr. Elena Rodriguez
+2025-08-11 13:15:00,081 - INFO - Created agent: Dr. Alex Cho
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Sarah Chen
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Raj Patel
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Lisa Wang
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Michael Torres
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Elena Rodriguez
+2025-08-11 13:16:08,148 - INFO - Created agent: Dr. Alex Cho
+2025-08-11 13:16:08,149 - INFO - Running individual meeting with Dr. Sarah Chen
+2025-08-11 13:16:32,155 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:16:55,340 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:16:55,345 - INFO - ✅ Individual meeting saved: apoe_virtual_lab_20250811_13/meetings/dr._sarah_chen_20250811_131655.txt
+2025-08-11 13:16:55,345 - INFO - Running individual meeting with Dr. Raj Patel
+2025-08-11 13:17:18,632 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:17:50,176 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:17:50,181 - INFO - ✅ Individual meeting saved: apoe_virtual_lab_20250811_13/meetings/dr._raj_patel_20250811_131750.txt
+2025-08-11 13:17:50,181 - INFO - Running individual meeting with Dr. Lisa Wang
+2025-08-11 13:18:15,661 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:18:43,445 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:18:43,450 - INFO - ✅ Individual meeting saved: apoe_virtual_lab_20250811_13/meetings/dr._lisa_wang_20250811_131843.txt
+2025-08-11 13:18:43,450 - INFO - Running individual meeting with Dr. Michael Torres
+2025-08-11 13:19:01,408 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:19:23,766 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:19:23,771 - INFO - ✅ Individual meeting saved: apoe_virtual_lab_20250811_13/meetings/dr._michael_torres_20250811_131923.txt
+2025-08-11 13:19:23,771 - INFO - Running individual meeting with Dr. Alex Cho
+2025-08-11 13:19:48,085 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:20:24,237 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:20:24,242 - INFO - ✅ Individual meeting saved: apoe_virtual_lab_20250811_13/meetings/dr._alex_cho_20250811_132024.txt
+2025-08-11 13:20:24,242 - INFO - Running 3 parallel meetings with 6 agents
+2025-08-11 13:20:24,242 - INFO - Each meeting will have 3 rounds
+2025-08-11 13:20:24,243 - INFO - Running team meeting: Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 1)
+2025-08-11 13:20:24,243 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+2025-08-11 13:20:46,902 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:20:46,907 - INFO - ✅ Team meeting saved: apoe_virtual_lab_20250811_13/meetings/team_meeting_20250811_132046.txt
+2025-08-11 13:20:46,907 - INFO - Running team meeting: Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 2)
+2025-08-11 13:20:46,908 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+2025-08-11 13:21:08,814 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:21:08,819 - INFO - ✅ Team meeting saved: apoe_virtual_lab_20250811_13/meetings/team_meeting_20250811_132108.txt
+2025-08-11 13:21:08,819 - INFO - Running team meeting: Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 3)
+2025-08-11 13:21:08,819 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+2025-08-11 13:21:32,024 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 13:21:32,028 - INFO - ✅ Team meeting saved: apoe_virtual_lab_20250811_13/meetings/team_meeting_20250811_132132.txt
+2025-08-11 13:21:59,583 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
