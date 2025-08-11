@@ -12,6 +12,8 @@ from pathlib import Path
 import anthropic
 import openai
 from datetime import datetime
+import requests
+from urllib.parse import quote
 
 @dataclass
 class Agent:
@@ -40,9 +42,15 @@ class VirtualLab:
     def __init__(self, 
                  api_provider: str = "anthropic",  # or "openai"
                  api_key: str = None,
-                 project_dir: str = "./apoe_virtual_lab"):
+                 project_dir: str = None):
         
         self.api_provider = api_provider
+        
+        # Create timestamped project directory
+        if project_dir is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+            project_dir = f"./apoe_virtual_lab_{timestamp}"
+        
         self.project_dir = Path(project_dir)
         self.project_dir.mkdir(exist_ok=True)
         
@@ -50,6 +58,7 @@ class VirtualLab:
         (self.project_dir / "meetings").mkdir(exist_ok=True)
         (self.project_dir / "reports").mkdir(exist_ok=True)
         (self.project_dir / "json_data").mkdir(exist_ok=True)
+        (self.project_dir / "code_implementations").mkdir(exist_ok=True)
         
         # Initialize API client
         if api_provider == "anthropic":
@@ -93,24 +102,34 @@ ROLE: {role}
 
 PROJECT CONTEXT:
 - Analyzing APOE region (chr19:44-46Mb) for Alzheimer's disease
+- Have GWAS summary statistics (~500k samples) and fine-mapped molecular QTL data
+- No individual-level GWAS data, but have individual-level molecular QTL genotype/phenotype data
 - MAJOR CHALLENGES:
-  1. APOE E4 signal too strong - overshadows other signals when conditioning
+  1. APOE E2/E3/E4 signals too strong, especially E4 - overshadows other signals when conditioning
   2. LD reference panel mismatches create spurious independent signals
   3. Multiple xQTL colocalizations may be LD artifacts from E4 dominance
-- Goal: Find independent signals beyond E2/E3/E4 variants
+  4. xQTL data includes effects on nearby genes beyond APOE - need to distinguish direct vs indirect effects
+- Goal: Find independent AD-predisposing variants beyond E2/E3/E4 with robust methodology
+
+CAPABILITIES:
+- You have access to internet search to look up latest methods, software, and research
+- If uncertain about specific approaches, you can search for current best practices
+- Always ground recommendations in the most recent and robust methodologies
 
 INSTRUCTIONS:
 - Provide expert analysis within your area of expertise
 - Be specific about methods, software, and parameters
 - Suggest quality control steps and validation approaches
 - Identify potential issues and limitations
-- Ground recommendations in latest research
+- If you need to verify or find information about methods/tools, use web search
+- Consider the challenge of analyzing ~300 genes in the region - suggest prioritization strategies
 
 When participating in meetings:
 - Contribute your specialized perspective
 - Build on other agents' ideas constructively
 - Ask clarifying questions when needed
 - Provide concrete, actionable recommendations
+- Search for information if you're uncertain about specific technical details
 """
 
         agent = Agent(
@@ -139,11 +158,52 @@ When participating in meetings:
         self.logger.info(f"Created agent: {name}")
         return agent
 
+    def web_search(self, query: str, num_results: int = 3) -> str:
+        """Perform web search for latest information"""
+        try:
+            # Using DuckDuckGo search API (no key required)
+            url = f"https://api.duckduckgo.com/?q={quote(query)}&format=json&no_html=1&skip_disambig=1"
+            response = requests.get(url, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                results = []
+                
+                # Get abstract if available
+                if data.get('Abstract'):
+                    results.append(f"Summary: {data['Abstract']}")
+                
+                # Get related topics
+                for topic in data.get('RelatedTopics', [])[:num_results]:
+                    if isinstance(topic, dict) and topic.get('Text'):
+                        results.append(f"• {topic['Text']}")
+                
+                return "\n".join(results) if results else "No relevant results found."
+            
+            return "Search temporarily unavailable."
+            
+        except Exception as e:
+            self.logger.warning(f"Web search failed: {e}")
+            return "Web search unavailable - proceeding with existing knowledge."
+
     async def call_llm(self, 
                        prompt: str, 
                        temperature: float = 0.7,
-                       max_tokens: int = 4000) -> str:
-        """Make API call to LLM"""
+                       max_tokens: int = 4000,
+                       enable_search: bool = True) -> str:
+        """Make API call to LLM with optional web search capability"""
+        
+        # Add search capability to prompt if enabled
+        if enable_search:
+            search_instructions = """
+            
+WEB SEARCH CAPABILITY:
+If you need to verify information or find the latest methods/tools, you can request a web search by including in your response:
+[SEARCH: your search query]
+
+I will then provide you with current information to inform your recommendations.
+"""
+            prompt += search_instructions
         
         try:
             if self.api_provider == "anthropic":
@@ -153,7 +213,7 @@ When participating in meetings:
                     temperature=temperature,
                     messages=[{"role": "user", "content": prompt}]
                 )
-                return response.content[0].text
+                response_text = response.content[0].text
                 
             elif self.api_provider == "openai":
                 response = self.client.chat.completions.create(
@@ -162,7 +222,20 @@ When participating in meetings:
                     temperature=temperature,
                     max_tokens=max_tokens
                 )
-                return response.choices[0].message.content
+                response_text = response.choices[0].message.content
+            
+            # Process search requests if present
+            if enable_search and "[SEARCH:" in response_text:
+                import re
+                search_pattern = r'\[SEARCH:\s*([^\]]+)\]'
+                searches = re.findall(search_pattern, response_text)
+                
+                for search_query in searches:
+                    search_results = self.web_search(search_query.strip())
+                    response_text = response_text.replace(f"[SEARCH: {search_query}]", 
+                                                        f"\n\n**Web Search Results for '{search_query}':**\n{search_results}\n")
+            
+            return response_text
                 
         except Exception as e:
             self.logger.error(f"LLM API call failed: {e}")
@@ -285,29 +358,43 @@ PARTICIPANTS:
         
         for participant in participants:
             agent = self.agents[participant]
-            team_prompt += f"- {agent.name}: {agent.expertise}\n"
+            team_prompt += f"- {agent.name} ({agent.title}): {agent.expertise[:100]}...\n"
             
         team_prompt += f"""
 
 PROJECT CONTEXT:
-- Analyzing APOE region for Alzheimer's disease independent signals
-- Major methodological challenges with E4 conditioning and LD artifacts
+- Analyzing APOE region (chr19:44-46Mb) for Alzheimer's disease independent signals
+- Have GWAS summary statistics (~500k samples) and fine-mapped molecular QTL data
+- No individual-level GWAS data, but have individual-level molecular QTL genotype/phenotype data
+- Major methodological challenges with E2/E3/E4 conditioning and LD artifacts
+- Need to analyze ~300 genes in region - require prioritization strategies
 - Need robust, validated approaches for this complex region
 
 MEETING STRUCTURE:
-This is a {rounds}-round scientific discussion. In each round, each participant should:
-1. Contribute their specialized expertise to the agenda
-2. Build on previous participants' ideas
-3. Identify potential issues or improvements
-4. Suggest concrete next steps
+This is a {rounds}-round scientific discussion. For each round:
 
-Please simulate a productive scientific discussion where each participant contributes their unique perspective. Include:
-- Specific methodological recommendations
-- Quality control considerations  
-- Validation strategies
-- Task assignments for follow-up work
+**ROUND 1: Initial Recommendations**
+Each participant provides their initial analysis and recommendations for their area of expertise.
 
-END WITH: Concrete action items and clear task assignments for each participant.
+**ROUND 2: Integration and Refinement** 
+Participants build on each other's ideas, identify dependencies between approaches, and refine recommendations based on interdisciplinary feedback.
+
+**ROUND 3: Synthesis and Implementation**
+Final synthesis of all approaches into a coherent analysis pipeline with clear priorities, validation standards, and implementation steps.
+
+Please simulate this productive {rounds}-round scientific discussion where:
+- Each participant contributes their specialized expertise in each round
+- Ideas are built upon and refined across rounds
+- Methodological challenges are systematically addressed
+- Realistic prioritization strategies are developed (given ~300 candidate genes)
+
+Include in each round:
+- Specific methodological recommendations with software/parameters
+- Quality control considerations and diagnostics
+- Validation strategies and negative controls
+- Realistic resource and time estimates
+
+END WITH: Concrete action items, clear task assignments for each participant, and prioritized implementation timeline.
 """
 
         self.logger.info(f"Running team meeting: {agenda}")
@@ -453,50 +540,58 @@ Focus on convergent themes and most robust recommendations.
         return summary
 
 # APOE-specific agent setup
-def setup_apoe_virtual_lab(api_provider: str = "anthropic", api_key: str = None) -> VirtualLab:
+def setup_apoe_virtual_lab(api_provider: str = "anthropic", api_key: str = None, project_dir: str = None) -> VirtualLab:
     """Initialize Virtual Lab with APOE-specific agents"""
     
-    lab = VirtualLab(api_provider=api_provider, api_key=api_key)
+    lab = VirtualLab(api_provider=api_provider, api_key=api_key, project_dir=project_dir)
     
     # Create specialized agents for APOE analysis
     lab.create_agent(
         name="Dr. Sarah Chen",
         title="LD Reference Panel Specialist", 
-        expertise="LD reference panel accuracy, conditioning artifacts, population stratification effects",
-        goal="Diagnose and solve LD reference panel conditioning problems",
-        role="Lead methodological analysis of conditioning approaches and LD diagnostics"
+        expertise="LD reference panel accuracy and population matching, conditioning artifacts from strong genetic signals, alternative conditioning strategies (imputing z-scores from given z-scores and reference panels), diagnosing spurious associations from LD mismatches, analysis with GWAS summary statistics and LD references without individual-level data, analysis of complex LD regions like MHC and chromosome 19 around APOE",
+        goal="Diagnose LD problems and develop robust conditioning approaches that work despite APOE E4 dominance",
+        role="Lead methodological analysis of LD-sensitive conditioning approaches and diagnostic frameworks, with focus on methodological rigor, multiple validation approaches, and identification of confounders and artifacts"
     )
     
     lab.create_agent(
         name="Dr. Raj Patel",
         title="Advanced Colocalization Methodologist",
-        expertise="Multi-signal colocalization, COLOC-SuSiE, cross-tissue validation, LD artifact detection",
-        goal="Distinguish true molecular colocalization from LD artifacts", 
-        role="Lead molecular QTL integration and colocalization analysis"
+        expertise="Multi-signal colocalization methods (COLOC-SuSiE, eCAVIAR, colocboost), distinguishing true colocalization from LD artifacts, cross-tissue molecular QTL integration, credible set interpretation and validation, using and interpreting diverse xQTL data sources for colocalization analysis",
+        goal="Determine which molecular colocalizations represent true biological signals versus LD echoes from E4 dominance", 
+        role="Lead molecular QTL integration and colocalization analysis with emphasis on cross-tissue validation, conditional molecular analyses, effect size coherence assessment, and both cis and trans colocalization across multiple datasets"
     )
     
     lab.create_agent(
         name="Dr. Lisa Wang", 
         title="Fine-mapping Robustness Expert",
-        expertise="SuSiE, FINEMAP, PolyFun, robust inference under model misspecification",
-        goal="Develop robust fine-mapping strategies for complex LD regions",
-        role="Lead statistical fine-mapping and credible set validation"
+        expertise="Fine-mapping methods for complex LD regions (SuSiE, FINEMAP, PolyFun), fine-mapping diagnostics and model validation, handling strong confounding signals, multi-method convergent evidence approaches",
+        goal="Develop robust fine-mapping strategies that work despite APOE E4's overwhelming effects",
+        role="Lead statistical fine-mapping and credible set validation using multiple methods for cross-validation, model diagnostics, and approaches specifically designed for strong confounder scenarios with emphasis on credible set stability and sensitivity analysis"
     )
     
     lab.create_agent(
         name="Dr. Michael Torres",
         title="APOE Biology Specialist",
-        expertise="APOE isoform biology, regulatory variants, APOE-independent mechanisms",
-        goal="Evaluate biological plausibility of candidate independent variants",
-        role="Lead biological interpretation and functional validation design"
+        expertise="APOE isoform biology beyond E2/E3/E4, known regulatory variants in APOE region, APOE-independent AD pathways in 19q13, functional validation approaches for APOE variants, molecular regulations near APOE region, knowledge of xQTL near APOE including cis and trans effects from brain and CSF",
+        goal="Evaluate biological plausibility of candidate independent variants and design functional validation strategies",
+        role="Lead biological interpretation with focus on known APOE regulatory mechanisms, APOE-independent genes in the region (TOMM40, APOC1, etc.), tissue-specific and cell-type effects, and xQTL-informed analysis focused on brain and CSF regions"
     )
     
     lab.create_agent(
         name="Dr. Elena Rodriguez",
         title="Scientific Critic",
-        expertise="Critical evaluation, methodology validation, alternative explanations",
-        goal="Ensure methodological rigor and identify potential confounders",
-        role="Provide critical evaluation and validation requirements"
+        expertise="Critical evaluation of genetic association studies, methodological weakness identification, evidence strength evaluation, reproducibility assessment, validation approach design",
+        goal="Ensure methodological rigor and identify potential confounders through skeptical but constructive criticism",
+        role="Provide critical evaluation of all analyses and findings, question assumptions and methodologies, suggest negative controls and validation experiments, identify alternative explanations, and establish evidence strength standards"
+    )
+    
+    lab.create_agent(
+        name="Dr. Alex Cho",
+        title="Bioinformatics Implementation Engineer",
+        expertise="R programming and statistical computing, bash scripting and workflow automation, Python for data analysis and integration, implementation of bioinformatics pipelines, integration of multiple software tools and databases, reproducible research workflows, data visualization and reporting",
+        goal="Translate methodological recommendations into robust, reproducible computational workflows and code implementations",
+        role="Lead the practical implementation of all analysis pipelines, develop R scripts for statistical analyses, create bash workflows for tool integration, implement quality control and validation procedures, and ensure reproducible and well-documented code for all recommended methodologies"
     )
     
     return lab
@@ -515,8 +610,9 @@ async def run_apoe_analysis():
     
     # Phase 1: Project specification team meeting
     team_result = await lab.run_team_meeting(
-        agenda="Project planning: Strategy for identifying independent APOE signals beyond E2/E3/E4 while addressing methodological challenges",
-        participants=["Dr. Sarah Chen", "Dr. Raj Patel", "Dr. Lisa Wang", "Dr. Michael Torres", "Dr. Elena Rodriguez"]
+        agenda="Project planning: Strategy for identifying independent APOE signals beyond E2/E3/E4 while addressing methodological challenges and implementation requirements",
+        participants=["Dr. Sarah Chen", "Dr. Raj Patel", "Dr. Lisa Wang", "Dr. Michael Torres", "Dr. Elena Rodriguez", "Dr. Alex Cho"],
+        rounds=3
     )
     
     print("Team meeting completed")
@@ -534,11 +630,18 @@ async def run_apoe_analysis():
         context="Multiple xQTL datasets show colocalization but may be false positives from E4 LD effects"
     )
     
+    # Phase 2b: Bioinformatics implementation planning
+    implementation_result = await lab.run_individual_meeting(
+        "Dr. Alex Cho",
+        "Design comprehensive computational workflow for APOE analysis pipeline integration",
+        context="Based on methodological recommendations from LD, colocalization, and fine-mapping experts, create detailed implementation plan with R/bash/Python workflows"
+    )
+    
     # Phase 3: Results synthesis with parallel meetings for robustness
     synthesis_meeting = Meeting(
         meeting_type="team",
-        agenda="Synthesize methodological recommendations into integrated analysis pipeline",
-        participants=["Dr. Sarah Chen", "Dr. Raj Patel", "Dr. Lisa Wang", "Dr. Elena Rodriguez"],
+        agenda="Synthesize all recommendations into integrated, implementable analysis pipeline with realistic prioritization for ~300 candidate genes",
+        participants=["Dr. Sarah Chen", "Dr. Raj Patel", "Dr. Lisa Wang", "Dr. Elena Rodriguez", "Dr. Alex Cho"],
         rounds=3
     )
     
@@ -546,7 +649,8 @@ async def run_apoe_analysis():
         synthesis_meeting,
         num_parallel=3,  # Like Virtual Lab paper
         creative_temp=0.8,
-        merge_temp=0.2
+        merge_temp=0.2,
+        all_agents=True  # Include all 6 agents
     )
     
     print("Analysis complete!")
