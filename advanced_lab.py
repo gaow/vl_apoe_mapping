@@ -48,7 +48,7 @@ class VirtualLab:
         
         # Create timestamped project directory
         if project_dir is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+            timestamp = datetime.now().strftime("%Y%m%d_%H")
             project_dir = f"./apoe_virtual_lab_{timestamp}"
         
         self.project_dir = Path(project_dir)

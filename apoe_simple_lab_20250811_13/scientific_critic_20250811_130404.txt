@@ -1,0 +1,85 @@
+TASK: 
+I'm analyzing APOE region (chr19:44-46Mb) for independent AD signals beyond E2/E3/E4.
+
+DATASETS:
+- GWAS summary statistics (~500k samples)
+- Fine-mapped molecular QTL data (eQTL, pQTL, sQTL, trans effects)
+- Multiple LD reference panels (1000G, UKB, TOPMed)
+- ~300 candidate genes in the region
+
+MAIN CHALLENGES:
+1. E2/E3/E4 effects too strong, especially E4 - creates conditioning artifacts
+2. LD reference panel mismatches with study population
+3. Multiple xQTL colocalizations may be LD artifacts from E4 dominance
+4. Need to find new genes beyond APOE that variants regulate
+5. Scale: analyzing ~300 genes requires prioritization strategies
+
+QUESTION: How do I address these challenges in your area of expertise?
+Provide specific methodological recommendations and implementation approaches.
+
+
+*Adjusts glasses while reviewing the project details*
+
+Thank you for presenting this complex analysis. As someone who has evaluated numerous genetic association studies, I have several critical concerns and recommendations.
+
+First, let me address the methodological challenges systematically:
+
+1. **E2/E3/E4 Conditioning Issues**
+[SEARCH NEEDED: Latest methods for conditioning on strong genetic effects while avoiding artifacts]
+
+My immediate concerns:
+- Standard conditioning approaches may introduce spurious associations
+- Recommend:
+  a) Perform sensitivity analyses using multiple conditioning strategies
+  b) Create null simulations maintaining true LD structure but randomizing phenotypes
+  c) Compare results across different statistical methods (e.g., GCTA-COJO, FINEMAP, SuSiE)
+
+2. **LD Reference Panel Mismatch**
+This is particularly concerning as it can lead to false positives. I suggest:
+- Conduct formal ancestry matching analysis
+- Compare effect estimates across different ancestry groups
+- Use local ancestry inference in admixed populations
+- Create hybrid reference panels if needed
+
+3. **QTL Colocalization Assessment**
+*Raises eyebrow* This requires extreme caution:
+- Implement stringent posterior probability thresholds (>0.9)
+- Require consistent effects across multiple QTL types
+- Perform permutation tests to establish null distribution
+- Consider Bayesian colocalization methods with careful prior specification
+
+4. **Novel Gene Discovery Strategy**
+[SEARCH NEEDED: Current best practices for regulatory network analysis in complex regions]
+
+Recommend hierarchical approach:
+1. Prioritize genes with multiple independent QTL signals
+2. Require cross-validation in independent datasets
+3. Implement negative controls using matched genomic regions
+4. Consider tissue-specific effects
+
+5. **Scale Management**
+For 300 genes, suggest:
+- Implement strict multiple testing correction
+- Create clear a priori prioritization criteria
+- Use adaptive thresholding based on prior evidence
+- Document all filtering steps meticulously
+
+**Critical Validation Requirements:**
+1. Independent replication cohorts
+2. Cross-platform validation
+3. Functional validation for top signals
+4. Careful assessment of technical artifacts
+
+**Red Flags to Watch For:**
+- Signals that disappear with different conditioning approaches
+- QTL effects that don't replicate across tissues
+- Inconsistent direction of effects
+- Perfect LD with known APOE variants
+
+Would you like me to elaborate on any of these points or discuss specific implementation strategies?
+
+*Adjusts posture*
+
+Remember, it's better to have fewer, well-validated findings than many questionable associations. I'd strongly recommend establishing clear go/no-go criteria before beginning the analysis.
+
+[SEARCH NEEDED: Current statistical power requirements for conditional analysis in regions with strong effects]

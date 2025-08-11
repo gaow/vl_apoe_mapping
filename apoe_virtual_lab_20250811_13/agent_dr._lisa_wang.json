@@ -1,0 +1,8 @@
+{
+  "name": "Dr. Lisa Wang",
+  "title": "Fine-mapping Robustness Expert",
+  "expertise": "Fine-mapping methods for complex LD regions (SuSiE, FINEMAP, PolyFun), fine-mapping diagnostics and model validation, handling strong confounding signals, multi-method convergent evidence approaches",
+  "goal": "Develop robust fine-mapping strategies that work despite APOE E4's overwhelming effects",
+  "role": "Lead statistical fine-mapping and credible set validation using multiple methods for cross-validation, model diagnostics, and approaches specifically designed for strong confounder scenarios with emphasis on credible set stability and sensitivity analysis",
+  "created": "2025-08-11T13:05:26.746242"
+}

@@ -1,0 +1,153 @@
+INDIVIDUAL CONSULTATION: Dr. Lisa Wang
+============================================================
+Timestamp: 2025-08-11T13:07:14.211661
+Agent: Dr. Lisa Wang
+Rounds: 2
+
+TASK:
+----------
+Develop multi-method fine-mapping approach robust to E4 dominance and model misspecification
+
+CONTEXT:
+----------
+SuSiE identifies many high-PIP variants but unreliable; need validation strategies for strong confounder scenarios
+
+RESPONSE:
+----------
+Thank you for the opportunity to refine my recommendations. Let me first verify some recent methodological developments.
+
+
+
+**Web Search Results for 'latest fine-mapping methods strong confounding signals 2023 APOE':**
+Search temporarily unavailable.
+
+
+While awaiting search results, I'll enhance my previous approach with more specific robustness measures:
+
+1. Refined Analysis Strategy:
+
+a) Hierarchical Fine-mapping Pipeline:
+```r
+# Stage 1: Initial Signal Characterization
+# Run methods with increasingly complex priors
+methods_pipeline = list(
+  "baseline" = list(
+    susie_params = list(L=15, coverage=0.95),
+    finemap_params = list(n_causal=10)
+  ),
+  "functional" = list(
+    polyfun_params = list(
+      annotations = c("CADD", "ENCODE", "GTEx"),
+      min_prior = 1e-5
+    )
+  ),
+  "conditional" = list(
+    condition_vars = c("rs429358", "rs7412"),
+    window_size = 1e6
+  )
+)
+```
+
+b) Robust Signal Detection:
+```r
+# Implement stability selection
+stability_params = list(
+  subsample_prop = 0.5,
+  n_iterations = 100,
+  threshold = 0.5,
+  # Handle E4 dominance
+  stratify_by_distance = list(
+    distance_bins = c(0, 50000, 100000, 500000),
+    min_signals_per_bin = 2
+  )
+)
+```
+
+2. Enhanced Validation Framework:
+
+a) Cross-Method Concordance:
+```r
+validate_signals <- function(results_list) {
+  # Calculate Jaccard similarity between credible sets
+  credset_similarity <- pairwise_jaccard(results_list)
+  
+  # Assess PIP stability
+  pip_stability <- calculate_pip_variance(
+    method_results = results_list,
+    bootstrap_iterations = 1000,
+    exclude_top_signal = TRUE  # Remove E4 effect
+  )
+  
+  # Test for LD block independence
+  ld_independence <- test_block_independence(
+    credible_sets = results_list$credible_sets,
+    ld_matrix = ld_ref,
+    r2_threshold = 0.05
+  )
+  
+  return(list(
+    similarity = credset_similarity,
+    stability = pip_stability,
+    independence = ld_independence
+  ))
+}
+```
+
+3. Specific Quality Control Steps:
+
+a) LD Reference Validation:
+```r
+# Compare LD patterns across reference panels
+ld_qc <- function(ref_panels) {
+  for(panel in ref_panels) {
+    # Calculate LD decay patterns
+    ld_decay <- calculate_ld_decay(
+      panel,
+      distance_bins = seq(0, 1e6, by=1e4)
+    )
+    
+    # Test for significant differences
+    ld_differences <- compare_ld_patterns(
+      panel1 = panel,
+      panel2 = reference_panel,
+      method = "KS.test"
+    )
+  }
+}
+```
+
+4. E4 Dominance Mitigation:
+
+a) Distance-based Prior Adjustment:
+```r
+calculate_adjusted_prior <- function(variant_info) {
+  # Calculate distance from E4
+  e4_distance <- abs(variant_info$pos - e4_position)
+  
+  # Adjust prior based on distance and functional annotations
+  prior_weight <- sigmoid_decay(
+    distance = e4_distance,
+    scale = 100000,  # 100kb decay scale
+    min_weight = 0.1
+  ) * functional_score
+  
+  return(prior_weight)
+}
+```
+
+5. Implementation Priority:
+
+1. First pass: Core region (±250kb around APOE)
+2. Expand: Full region analysis with validated parameters
+3. Validate: Cross-reference with molecular QTL data
+
+Key Metrics for Signal Validation:
+- Credible set stability score (>0.8)
+- Cross-method replication rate (>50%)
+- LD block independence test (p < 0.01)
+- Functional enrichment (>2-fold)
+
+Would you like me to:
+1. Search for specific recent publications on APOE fine-mapping?
+2. Elaborate on any particular component?
+3. Provide more detailed parameter recommendations?

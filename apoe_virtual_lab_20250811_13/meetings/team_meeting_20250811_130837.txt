@@ -1,0 +1,65 @@
+VIRTUAL LAB TEAM MEETING
+============================================================
+Timestamp: 2025-08-11T13:08:37.126192
+Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Michael Torres, Dr. Elena Rodriguez, Dr. Alex Cho
+Rounds: 3
+
+AGENDA:
+----------
+Synthesize all expert recommendations into integrated, implementable APOE analysis pipeline with realistic prioritization for ~300 candidate genes (Parallel Session 1)
+
+DISCUSSION:
+----------
+Let me help facilitate this virtual lab meeting to develop an integrated APOE analysis pipeline.
+
+**ROUND 1: Initial Recommendations**
+
+Dr. Sarah Chen (LD Reference Panel):
+"Given the complexity of the APOE region, I recommend:
+- Using population-matched 1000G Phase 3 + TOPMed reference panels
+- Careful QC filtering (MAF>1%, INFO>0.9, HWE p>1e-6)
+- Computing local LD matrices in 1MB windows with 100kb overlap
+- Implementing ancestry-specific analyses given APOE effect heterogeneity
+Estimated time: 2-3 weeks for reference panel preparation"
+
+Dr. Raj Patel (Colocalization):
+"For multi-signal colocalization:
+- Start with COLOC-SuSiE as primary method (handles multiple signals)
+- Use eCAVIAR for validation of top signals
+- Implement colocboost for signals with strong priors
+- Set PP threshold >0.8 for primary calls
+Estimated time: 3-4 weeks for full colocalization analysis"
+
+Dr. Lisa Wang (Fine-mapping):
+"I propose a hierarchical fine-mapping approach:
+1. Initial SuSiE run across full region
+2. FINEMAP focused on high-priority sub-regions
+3. PolyFun integration for functional priors
+- Critical to assess convergence and credible set calibration
+Estimated time: 4-5 weeks for comprehensive fine-mapping"
+
+Dr. Michael Torres (APOE Biology):
+"Key biological considerations:
+- Must condition on classical E2/E3/E4 variants first
+- Prioritize genes with known AD pathways (APP processing, inflammation)
+- Consider tissue-specific effects in brain regions
+- Focus on regulatory variants in enhancer regions
+Suggested 2-month timeline for biological validation"
+
+Dr. Elena Rodriguez (Scientific Critic):
+"Critical methodological concerns:
+- Risk of collider bias from E2/E3/E4 conditioning
+- Need for negative control regions
+- Importance of replication cohorts
+- Careful assessment of winner's curse
+Recommend 3-4 weeks for critical evaluation steps"
+
+Dr. Alex Cho (Implementation):
+"Implementation framework:
+- Snakemake workflow for reproducibility
+- Containerized environments (Docker/Singularity)
+- GPU acceleration for fine-mapping
+- Automated QC reporting
+Initial setup: 3-4 weeks"
+
+[Would you like me to proceed with Round 2 where participants refine and integrate these initial recommendations?]

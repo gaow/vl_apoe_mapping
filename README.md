@@ -9,7 +9,7 @@
     2. I have various xQTL data indeed in terms of credible sets and they match / overlap with APOE many variants there. but that colocalization does not mean it is correct because again too many signals in APOE that might be due to LD mismatch
 
 3. let's set up the virtual lab for this problem without using any coding.
-    - [See the results here](vl_no_code_20250805.md)
+    - [See the results here](vl_no_code_20250805.md); [initial version](https://github.com/gaow/vl_apoe_mapping/blob/b4d1b333a0eddea83289f361654274a6398c8506/vl_no_code_20250805.md).
 
 4. This reads great now let's use some programmatic way for this to happen, like using some API? How does the Virtual Lab paper do this we will do the same.
     - Then after paying $5 to get the API key
@@ -24,7 +24,7 @@
 ```bash
 python simple_setup.py
 python task0_orientation.py
-python task1_xqtl_fp.py
+#python task1_xqtl_fp.py
 python task2_parallel_meeting.py
 ```
 

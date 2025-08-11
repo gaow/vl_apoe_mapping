@@ -29,7 +29,7 @@ def setup_simple_virtual_lab():
     client = anthropic.Anthropic(api_key=api_key)
     
     # Create timestamped output directory
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    timestamp = datetime.now().strftime("%Y%m%d_%H")
     output_dir = Path(f"./apoe_simple_lab_{timestamp}")
     output_dir.mkdir(exist_ok=True)
     
