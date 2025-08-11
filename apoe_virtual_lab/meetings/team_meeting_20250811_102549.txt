@@ -1,0 +1,54 @@
+VIRTUAL LAB TEAM MEETING
+============================================================
+Timestamp: 2025-08-11T10:25:49.556822
+Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+Rounds: 3
+
+AGENDA:
+----------
+Integrate methodological recommendations into unified APOE analysis pipeline
+
+DISCUSSION:
+----------
+I'll simulate this scientific discussion round by round.
+
+ROUND 1:
+
+Dr. Chen: "Let me start with the LD reference panel considerations. For the APOE region, I've found that:
+- Standard 1000G panels may not capture rare variants adequately
+- We should use population-specific panels when possible
+- I suggest incorporating TOPMed as our primary reference
+- We need to carefully assess conditioning artifacts by comparing results across different reference panels
+
+I'm seeing concerning population stratification effects even within European ancestry. We should implement:
+- PC-matching before/after E4 conditioning
+- Local ancestry analysis in this region
+- Sensitivity analyses with different ancestry compositions"
+
+Dr. Patel: "Building on Sarah's points about reference panels, for colocalization:
+- We should run COLOC-SuSiE with multiple tissue pairs
+- Cross-reference with GTEx v8 brain tissues
+- Implement LD block sensitivity analysis
+- Consider running separate analyses for each ancestral group
+
+I've developed some new approaches for detecting LD artifacts that could help here."
+
+Dr. Wang: "Excellent points. For fine-mapping:
+- SuSiE with varying L (credible sets)
+- Incorporate functional priors from PolyFun
+- Compare results with and without conditioning
+- Test for model misspecification using residual QQ plots
+
+I can provide code for robust inference under different prior specifications."
+
+Dr. Rodriguez: "Some critical considerations:
+- We need null simulations to validate each step
+- Should establish clear QC thresholds
+- Need to document all filtering decisions
+- Consider alternative causal mechanisms
+
+I suggest creating a validation framework that tests each component separately."
+
+ROUND 2:
+
+[Continuing in next part due to length...]

@@ -1,0 +1,49 @@
+2025-08-11 10:11:29,784 - INFO - Created agent: Dr. Sarah Chen
+2025-08-11 10:11:29,784 - INFO - Created agent: Dr. Raj Patel
+2025-08-11 10:11:29,784 - INFO - Created agent: Dr. Lisa Wang
+2025-08-11 10:11:29,785 - INFO - Created agent: Dr. Michael Torres
+2025-08-11 10:11:29,785 - INFO - Created agent: Dr. Elena Rodriguez
+2025-08-11 10:11:29,785 - INFO - Running individual meeting with Dr. Sarah Chen
+2025-08-11 10:11:47,602 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:12:05,723 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:12:05,727 - INFO - Running individual meeting with Dr. Raj Patel
+2025-08-11 10:12:22,022 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:12:39,120 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:12:39,123 - INFO - Running 3 parallel meetings
+2025-08-11 10:12:39,124 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:12:39,124 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:12:52,541 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:12:52,544 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:12:52,544 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:13:04,578 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:13:04,582 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:13:04,582 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:13:21,726 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:13:37,185 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:24:33,747 - INFO - Created agent: Dr. Sarah Chen
+2025-08-11 10:24:33,747 - INFO - Created agent: Dr. Raj Patel
+2025-08-11 10:24:33,747 - INFO - Created agent: Dr. Lisa Wang
+2025-08-11 10:24:33,747 - INFO - Created agent: Dr. Michael Torres
+2025-08-11 10:24:33,747 - INFO - Created agent: Dr. Elena Rodriguez
+2025-08-11 10:24:33,747 - INFO - Running individual meeting with Dr. Sarah Chen
+2025-08-11 10:24:47,792 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:04,967 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:04,971 - INFO - ✅ Individual meeting saved: apoe_virtual_lab/meetings/dr._sarah_chen_20250811_102504.txt
+2025-08-11 10:25:04,972 - INFO - Running individual meeting with Dr. Raj Patel
+2025-08-11 10:25:19,343 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:39,695 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:39,698 - INFO - ✅ Individual meeting saved: apoe_virtual_lab/meetings/dr._raj_patel_20250811_102539.txt
+2025-08-11 10:25:39,699 - INFO - Running 3 parallel meetings
+2025-08-11 10:25:39,700 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:25:39,700 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:25:49,526 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:49,558 - INFO - ✅ Team meeting saved: apoe_virtual_lab/meetings/team_meeting_20250811_102549.txt
+2025-08-11 10:25:49,559 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:25:49,559 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:25:59,541 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:25:59,545 - INFO - ✅ Team meeting saved: apoe_virtual_lab/meetings/team_meeting_20250811_102559.txt
+2025-08-11 10:25:59,545 - INFO - Running team meeting: Integrate methodological recommendations into unified APOE analysis pipeline
+2025-08-11 10:25:59,545 - INFO - Participants: Dr. Sarah Chen, Dr. Raj Patel, Dr. Lisa Wang, Dr. Elena Rodriguez
+2025-08-11 10:26:10,237 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-08-11 10:26:10,242 - INFO - ✅ Team meeting saved: apoe_virtual_lab/meetings/team_meeting_20250811_102610.txt
+2025-08-11 10:26:24,258 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"

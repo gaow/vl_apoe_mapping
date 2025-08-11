@@ -1,0 +1,150 @@
+INDIVIDUAL CONSULTATION: Dr. Raj Patel
+============================================================
+Timestamp: 2025-08-11T10:25:39.697390
+Agent: Dr. Raj Patel
+Rounds: 2
+
+TASK:
+----------
+Design robust colocalization pipeline for multi-signal scenarios
+
+RESPONSE:
+----------
+Thank you for the opportunity to refine my recommendations. As Dr. Raj Patel, I'll focus on strengthening our colocalization pipeline specifically for the APOE region challenges.
+
+1. Refined Analysis Approach:
+```r
+# Enhanced Hierarchical Pipeline
+
+# Stage 1: APOE E4 Signal Management
+conditional_analysis <- function(data, e4_variant="rs429358") {
+  # Residualize against E4 using non-linear terms
+  model <- fit_gam(
+    data = data,
+    formula = y ~ s(e4_dosage, bs="cr", k=5) + covariates,
+    method = "REML"
+  )
+  return(residuals(model))
+}
+
+# Stage 2: Multi-Signal Detection
+susie_wrapper <- function(data, region) {
+  # Modified COLOC-SuSiE with adaptive priors
+  priors <- estimate_empirical_priors(
+    data = data,
+    window_size = 1e6,
+    min_signals = 3
+  )
+  
+  fit <- coloc.susie(
+    dataset1 = data$gwas,
+    dataset2 = data$qtl,
+    priors = priors,
+    max_signals = 15,  # Increased from 10
+    r_squared_threshold = 0.005  # More stringent
+  )
+  
+  # Add signal quality metrics
+  fit$credible_sets <- compute_credible_sets(
+    fit, 
+    coverage = 0.99,  # Increased coverage
+    min_r2 = 0.01
+  )
+  
+  return(fit)
+}
+```
+
+2. Enhanced Validation Framework:
+```r
+# Cross-Population Validation
+validate_signals <- function(signals, populations) {
+  results <- list()
+  for(pop in populations) {
+    # Population-specific LD matrices
+    ld_mat <- compute_local_ld(
+      region = "chr19:44-46Mb",
+      population = pop,
+      window_size = 5e5,
+      min_maf = 0.01
+    )
+    
+    # Test signal independence
+    results[[pop]] <- test_signal_independence(
+      signals = signals,
+      ld_matrix = ld_mat,
+      permutations = 1000,
+      r2_threshold = 0.1
+    )
+  }
+  return(results)
+}
+```
+
+3. Specific APOE Region Considerations:
+```r
+# APOE Region-Specific QC
+apoe_qc <- function(data) {
+  # Check for E2/E3/E4 haplotype consistency
+  check_haplotype_consistency(
+    variants = c("rs429358", "rs7412"),
+    tolerance = 0.01
+  )
+  
+  # Detect cryptic relatedness in region
+  ibd_check <- compute_local_ibd(
+    region = "chr19:44-46Mb",
+    min_ibd = 0.185
+  )
+  
+  # Regional imputation quality assessment
+  imp_quality <- assess_imputation_accuracy(
+    reference = "TOPMed_r3",
+    r2_threshold = 0.8,
+    window_size = 1e6
+  )
+  
+  return(list(haplotype=haplotype_check, 
+             ibd=ibd_check, 
+             imputation=imp_quality))
+}
+```
+
+4. Improved Signal Disambiguation:
+```r
+# Signal Deconvolution
+deconvolve_signals <- function(susie_results) {
+  # Identify independent signals
+  independent_signals <- filter_signals(
+    susie_results,
+    pp_threshold = 0.9,  # Increased from 0.8
+    min_distance = 50000,  # Base pairs between signals
+    max_r2 = 0.05  # Stricter LD threshold
+  )
+  
+  # Test for E4 independence
+  e4_independence <- test_e4_independence(
+    signals = independent_signals,
+    methods = c("conditional", "interaction", "mediation"),
+    bootstrap_n = 1000
+  )
+  
+  return(list(signals=independent_signals, 
+             e4_tests=e4_independence))
+}
+```
+
+Key Improvements:
+1. More stringent signal independence criteria
+2. Enhanced E4 signal handling
+3. Population-specific validation
+4. Automated QC for APOE region
+5. Comprehensive signal deconvolution
+
+Limitations & Solutions:
+- Added non-linear E4 conditioning
+- Implemented multi-population validation
+- Enhanced signal quality metrics
+- Automated haplotype consistency checks
+
+Would you like me to elaborate on any specific aspect or discuss implementation details for your particular dataset?

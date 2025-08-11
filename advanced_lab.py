@@ -46,6 +46,11 @@ class VirtualLab:
         self.project_dir = Path(project_dir)
         self.project_dir.mkdir(exist_ok=True)
         
+        # Create subdirectories for organized output
+        (self.project_dir / "meetings").mkdir(exist_ok=True)
+        (self.project_dir / "reports").mkdir(exist_ok=True)
+        (self.project_dir / "json_data").mkdir(exist_ok=True)
+        
         # Initialize API client
         if api_provider == "anthropic":
             self.client = anthropic.Anthropic(api_key=api_key)
@@ -224,10 +229,33 @@ Be specific about software, parameters, and implementation details.
         
         self.meeting_history.append(meeting_result)
         
-        # Save to file
-        meeting_file = self.project_dir / f"individual_meeting_{len(self.meeting_history)}.json"
-        with open(meeting_file, 'w') as f:
+        # Save JSON data
+        json_file = self.project_dir / "json_data" / f"individual_meeting_{len(self.meeting_history)}.json"
+        with open(json_file, 'w') as f:
             json.dump(meeting_result, f, indent=2)
+        
+        # Save readable text report
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        readable_file = self.project_dir / "meetings" / f"{agent_name.lower().replace(' ', '_')}_{timestamp}.txt"
+        
+        with open(readable_file, 'w') as f:
+            f.write(f"INDIVIDUAL CONSULTATION: {agent_name}\n")
+            f.write("=" * 60 + "\n")
+            f.write(f"Timestamp: {meeting_result['timestamp']}\n")
+            f.write(f"Agent: {agent_name}\n")
+            f.write(f"Rounds: {rounds}\n\n")
+            f.write("TASK:\n")
+            f.write("-" * 10 + "\n")
+            f.write(f"{task}\n\n")
+            if context:
+                f.write("CONTEXT:\n")
+                f.write("-" * 10 + "\n")
+                f.write(f"{context}\n\n")
+            f.write("RESPONSE:\n")
+            f.write("-" * 10 + "\n")
+            f.write(responses[-1])
+            
+        self.logger.info(f"✅ Individual meeting saved: {readable_file}")
             
         return meeting_result
 
@@ -299,10 +327,29 @@ END WITH: Concrete action items and clear task assignments for each participant.
         
         self.meeting_history.append(meeting_result)
         
-        # Save to file
-        meeting_file = self.project_dir / f"team_meeting_{len(self.meeting_history)}.json"
-        with open(meeting_file, 'w') as f:
+        # Save JSON data
+        json_file = self.project_dir / "json_data" / f"team_meeting_{len(self.meeting_history)}.json"
+        with open(json_file, 'w') as f:
             json.dump(meeting_result, f, indent=2)
+        
+        # Save readable text report
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        readable_file = self.project_dir / "meetings" / f"team_meeting_{timestamp}.txt"
+        
+        with open(readable_file, 'w') as f:
+            f.write("VIRTUAL LAB TEAM MEETING\n")
+            f.write("=" * 60 + "\n")
+            f.write(f"Timestamp: {meeting_result['timestamp']}\n")
+            f.write(f"Participants: {', '.join(participants)}\n")
+            f.write(f"Rounds: {rounds}\n\n")
+            f.write("AGENDA:\n")
+            f.write("-" * 10 + "\n")
+            f.write(f"{agenda}\n\n")
+            f.write("DISCUSSION:\n")
+            f.write("-" * 10 + "\n")
+            f.write(response)
+            
+        self.logger.info(f"✅ Team meeting saved: {readable_file}")
             
         return meeting_result
 

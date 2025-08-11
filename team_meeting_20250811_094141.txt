@@ -1,0 +1,58 @@
+I'll simulate the team discussion:
+
+Dr. Chen (Leading): "Thank you all for joining. We need to carefully dissect the APOE region while avoiding false positives from LD complications. Let me start with the reference panel issues I'm seeing..."
+
+Dr. Chen: "Our current reference panel isn't capturing some rare variants well in this region. I suggest we create a custom reference panel combining 1000G with deep-sequencing data from AD cohorts. This should better represent the actual LD patterns around APOE."
+
+Dr. Patel: "Building on that, the colocalization analyses are particularly tricky here. I'm seeing what look like independent QTL signals, but when I dig deeper, many appear to be E4 shadows. We need a hierarchical conditioning approach where we:
+1. First condition on E4
+2. Then look for additional signals using a more stringent p-value threshold
+3. Verify each signal with cross-tissue consistency"
+
+Dr. Wang: "The fine-mapping stability is my main concern. I've run sensitivity analyses showing that small changes in LD structure can dramatically affect the posterior probabilities in this region. I propose:
+- Using multiple fine-mapping methods (SuSiE, FINEMAP, CAVIARBF)
+- Implementing a cross-validation framework
+- Setting more conservative credible set thresholds"
+
+Dr. Torres: "From the biology side, we know APOE has complex regulation. Beyond E4, there are documented enhancer elements and potential regulatory variants. We should specifically look for:
+- Enhancer variants from chromatin data
+- Protein-altering variants in LD-neighbors like TOMM40
+- Tissue-specific regulatory effects"
+
+Dr. Rodriguez (Critical perspective): "I see several potential pitfalls:
+1. We might be over-correcting for E4
+2. Tissue-specific effects could be noise
+3. The custom reference panel might introduce new biases
+We need clear null models for each analysis step."
+
+TASK ASSIGNMENTS:
+
+Dr. Chen:
+- Create custom LD reference panel
+- Develop QC metrics for panel evaluation
+- Document all reference panel decisions
+
+Dr. Patel:
+- Implement hierarchical conditioning pipeline
+- Develop cross-tissue consistency metrics
+- Create visualization tools for signal separation
+
+Dr. Wang:
+- Run comparative fine-mapping analysis
+- Implement cross-validation framework
+- Define robust credible set criteria
+
+Dr. Torres:
+- Compile regulatory element database
+- Annotate potential functional variants
+- Design validation experiments
+
+Dr. Rodriguez:
+- Design null models for each analysis stage
+- Develop failure mode tests
+- Create QC checklist for results
+
+NEXT STEPS:
+- Weekly progress updates
+- Code review in 2 weeks
+- Full results review in 1 month

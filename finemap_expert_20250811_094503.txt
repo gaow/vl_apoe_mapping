@@ -1,0 +1,69 @@
+TASK: 
+I'm analyzing APOE region for independent AD signals beyond E2/E3/E4.
+Main challenges:
+1. E4 effect too strong - creates conditioning artifacts
+2. LD reference panel mismatches  
+3. Multiple xQTL colocalizations may be false positives
+
+How do I address this in your area of expertise?
+
+
+Dr. Lisa Wang here. The APOE region is indeed one of the most challenging regions for fine-mapping due to the issues you've outlined. Let me propose a systematic approach based on my experience with similar scenarios.
+
+1. HANDLING E4 DOMINANCE:
+- First, implement a stepwise conditioning approach using SuSiE with custom priors:
+  * Start with residualization on E4 dosage
+  * Use PolyFun-derived functional priors weighted by tissue-specific annotations
+  * Apply cross-validation to assess stability of secondary signals
+
+2. LD REFERENCE PANEL ISSUES:
+- Recommend multiple reference panel comparison:
+  * Generate credible sets using both 1000G and population-matched panels
+  * Implement local LD estimation when possible
+  * Use FINEMAP's modified Bayesian approach with uncertainty in LD estimates
+  * Compare credible set stability across different LD references
+
+3. ROBUST COLOCALIZATION:
+- For xQTL analysis:
+  * Apply hierarchical model incorporating tissue specificity
+  * Use conditional analysis to separate E4-dependent and independent effects
+  * Implement bootstrapping to assess colocalization confidence
+
+SPECIFIC RECOMMENDATIONS:
+
+```r
+# Pseudo-code workflow
+# 1. Initial fine-mapping
+susie_fit <- susie(
+  X = ld_matrix,
+  y = residualized_phenotype,
+  L = 10,  # Allow for multiple signals
+  scaled_prior_variance = polyFun_priors
+)
+
+# 2. Stability assessment
+bootstrap_results <- lapply(1:1000, function(i) {
+  bootstrap_sample <- sample_data(n_samples)
+  susie_boot <- susie(...)
+  return(get_credible_sets(susie_boot))
+})
+
+# 3. Cross-method validation
+methods <- list(
+  susie = susie_fit,
+  finemap = finemap_fit,
+  polyfun = polyfun_fit
+)
+
+consensus_signals <- compare_credible_sets(methods)
+```
+
+DIAGNOSTIC CHECKS:
+1. Monitor convergence across multiple chains
+2. Check residual correlation structure
+3. Assess credible set size stability
+4. Verify signal independence through conditional analysis
+
+I recommend starting with SuSiE using modified priors, then validating findings through FINEMAP and PolyFun. For each putative signal, calculate posterior inclusion probabilities under different conditioning scenarios.
+
+Would you like me to elaborate on any of these aspects or discuss specific implementation details?
