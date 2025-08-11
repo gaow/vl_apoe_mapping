@@ -1,6 +1,6 @@
 # vl_apoe_mapping
 
-Prompts (to Claude chatbox)
+## Prompts (to Claude chatbox)
 
 1. Read the Virtual Lab paper attached. I want to setup a virtual lab to study my oen problem: specifically i have APOE region which is very complicated in terms of density of genes and linkage disequilibrium. I also have GWAS for APOE for Alzheimers disease summary statisics and a bunch of molecular QTL data fine-mapped from individual level ata for it. My goal is to find independent signals apart from E2/E3/E4
 
@@ -19,5 +19,12 @@ Prompts (to Claude chatbox)
     - It then provides everthing that works out of the box, generating the output [shown in this commit](https://github.com/gaow/vl_apoe_mapping/tree/bde3370de4b0eacc5aeca54b1ffbde917793a529).
     - Session now reached maximum token limit
 
+## First round of attempts
 
+```bash
+python simple_setup.py
+python task0_orientation.py
+python task1_xqtl_fp.py
+python task2_parallel_meeting.py
+```
 
